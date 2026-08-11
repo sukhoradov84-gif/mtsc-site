@@ -492,6 +492,65 @@
       line-height: 1.5;
     }
 
+
+    /* ─── PDF VIEWER MODAL ─── */
+    .pdf-modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.75);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .pdf-modal-overlay.active { display: flex; }
+    .pdf-modal {
+      background: var(--white);
+      border-radius: 4px;
+      width: 100%;
+      max-width: 960px;
+      height: 90vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .pdf-modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 20px;
+      background: var(--dark);
+      flex-shrink: 0;
+    }
+    .pdf-modal-title {
+      font-family: 'Oswald', sans-serif;
+      font-size: 14px;
+      color: rgba(246,249,252,0.85);
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-right: 16px;
+    }
+    .pdf-modal-close {
+      background: none;
+      border: none;
+      color: rgba(246,249,252,0.7);
+      font-size: 22px;
+      cursor: pointer;
+      line-height: 1;
+      padding: 0 4px;
+      flex-shrink: 0;
+      transition: color 0.2s;
+    }
+    .pdf-modal-close:hover { color: var(--teal); }
+    .pdf-modal iframe {
+      flex: 1;
+      width: 100%;
+      border: none;
+    }
+
     /* ─── ПОДВАЛ ─── */
     footer {
       background: #1e2730;
@@ -662,27 +721,13 @@
         <p>Сервисные контракты с фиксированными условиями. Приоритетное обслуживание и выделенный инженер.</p>
       </div>
 
-      <div class="service-card reveal">
-        <div class="service-icon">
-          <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect x="4" y="20" width="32" height="20" rx="2" stroke="#0D5EA8" stroke-width="2.5"/>
-            <path d="M36 28h6l4 8H36v-8z" stroke="#0D5EA8" stroke-width="2.5" stroke-linejoin="round"/>
-            <circle cx="12" cy="42" r="3" stroke="#00A6B2" stroke-width="2.5"/>
-            <circle cx="36" cy="42" r="3" stroke="#00A6B2" stroke-width="2.5"/>
-            <path d="M4 28h28M12 20V12a2 2 0 0 1 2-2h8l6 8" stroke="#0D5EA8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </div>
-        <h3>Поставка медицинских изделий</h3>
-        <p>Подбираем и организуем поставку медицинских изделий под задачи учреждения — с учётом назначения, условий эксплуатации и требований к оснащению.</p>
-      </div>
-
     </div>
   </div>
 </section>
 
 
 <!-- ПОСТАВКИ ОБОРУДОВАНИЯ -->
-<section class="supply-banner" aria-label="Поставка медицинских изделий">
+<section class="supply-banner" aria-label="Поставка медицинского оборудования">
   <div class="supply-banner-inner">
     <div class="supply-icon reveal" aria-hidden="true">
       <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -692,12 +737,12 @@
       </svg>
     </div>
     <div class="reveal">
-      <div class="supply-kicker">Поставка медицинских изделий</div>
+      <div class="supply-kicker">Поставка медицинского оборудования</div>
       <h2 class="supply-title">Оборудование — не только обслуживаем, но и поставляем</h2>
-      <p class="supply-text">Подберём и организуем поставку медицинских изделий под задачи учреждения — с учётом назначения, условий эксплуатации и требований к оснащению.</p>
+      <p class="supply-text">Подберём и организуем поставку медицинского оборудования под задачи учреждения — с учётом назначения, условий эксплуатации и требований к оснащению.</p>
       <p class="supply-types">Диагностическое · лабораторное · физиотерапевтическое · хирургическое</p>
     </div>
-    <a class="supply-cta reveal" href="mailto:service@mtsc.pro?subject=Запрос%20на%20поставку%20медицинских%20изделий">
+    <a class="supply-cta reveal" href="mailto:service@mtsc.pro?subject=Запрос%20на%20поставку%20медицинского%20оборудования">
       Запросить предложение
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
     </a>
@@ -892,18 +937,63 @@
 </script>
 
 <script>
-// Открытие PDF через браузерный просмотрщик Google Docs, чтобы документ
-// открывался для просмотра, а не принудительно скачивался.
+// PDF Viewer — открывает документ в модальном окне через Google Docs Viewer
 document.addEventListener('DOMContentLoaded', function () {
-  document.querySelectorAll('.doc-card[href$=".pdf"]').forEach(function (link) {
-    link.addEventListener('click', function (event) {
-      event.preventDefault();
-      var pdfUrl = new URL(link.getAttribute('href'), window.location.href).href;
-      var viewerUrl = 'https://docs.google.com/gview?embedded=1&url=' + encodeURIComponent(pdfUrl);
-      window.open(viewerUrl, '_blank', 'noopener');
+  var modal   = document.getElementById('pdfModal');
+  var frame   = document.getElementById('pdfModalFrame');
+  var title   = document.getElementById('pdfModalTitle');
+  var btnClose = document.getElementById('pdfModalClose');
+
+  function openPdf(url, label) {
+    var viewerUrl = 'https://docs.google.com/viewer?embedded=true&url=' + encodeURIComponent(url);
+    title.textContent = label;
+    frame.src = viewerUrl;
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closePdf() {
+    modal.classList.remove('active');
+    frame.src = '';
+    document.body.style.overflow = '';
+  }
+
+  // Клик по карточке документа
+  document.querySelectorAll('.doc-card').forEach(function (link) {
+    link.addEventListener('click', function (e) {
+      e.preventDefault();
+      var href = link.getAttribute('href');
+      var pdfUrl = new URL(href, window.location.href).href;
+      var label = link.querySelector('.doc-title') ? link.querySelector('.doc-title').textContent.trim() : 'Документ';
+      openPdf(pdfUrl, label);
     });
+  });
+
+  // Закрытие по кнопке
+  btnClose.addEventListener('click', closePdf);
+
+  // Закрытие по клику на оверлей
+  modal.addEventListener('click', function (e) {
+    if (e.target === modal) closePdf();
+  });
+
+  // Закрытие по Escape
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && modal.classList.contains('active')) closePdf();
   });
 });
 </script>
+
+<!-- PDF VIEWER MODAL -->
+<div class="pdf-modal-overlay" id="pdfModal">
+  <div class="pdf-modal">
+    <div class="pdf-modal-header">
+      <div class="pdf-modal-title" id="pdfModalTitle"></div>
+      <button class="pdf-modal-close" id="pdfModalClose" aria-label="Закрыть">✕</button>
+    </div>
+    <iframe id="pdfModalFrame" src="" allowfullscreen></iframe>
+  </div>
+</div>
+
 </body>
 </html>
