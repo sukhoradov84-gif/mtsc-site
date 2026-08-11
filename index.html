@@ -208,7 +208,7 @@
     #services { background: var(--ice); }
     .services-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      grid-template-columns: repeat(3, 1fr);
       gap: 2px;
       background: var(--rule);
       border: 1px solid var(--rule);
@@ -583,6 +583,7 @@
       nav a { font-size: 12px; }
       .hero { padding: 56px 20px 52px; }
       .hero-stats { gap: 28px; }
+      .services-grid { grid-template-columns: repeat(2, 1fr); }
       #about .section-inner {
         grid-template-columns: 1fr;
         gap: 40px;
@@ -603,6 +604,7 @@
     @media (max-width: 480px) {
       nav { display: none; }
       .hero h1 { font-size: 32px; }
+      .services-grid { grid-template-columns: 1fr; }
       .supply-banner-inner { grid-template-columns: 1fr; gap: 16px; }
       .supply-cta { grid-column: auto; width: 100%; justify-content: center; }
       .supply-icon { width: 50px; height: 50px; }
@@ -719,6 +721,18 @@
         </div>
         <h3>Сервисная поддержка</h3>
         <p>Сервисные контракты с фиксированными условиями. Приоритетное обслуживание и выделенный инженер.</p>
+      </div>
+
+      <div class="service-card reveal">
+        <div class="service-icon">
+          <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M8 20.5 24 11l16 9.5v17L24 47 8 37.5v-17Z" stroke="#0D5EA8" stroke-width="2.5" stroke-linejoin="round"/>
+            <path d="M8.5 20.5 24 29.5 39.5 20.5M24 29.5V46" stroke="#0D5EA8" stroke-width="2.5" stroke-linejoin="round"/>
+            <path d="M16 16 32 25v10" stroke="#00A6B2" stroke-width="2" stroke-linecap="round" opacity=".7"/>
+          </svg>
+        </div>
+        <h3>Поставка медицинских изделий</h3>
+        <p>Подбираем и организуем поставку медицинских изделий под задачи учреждения — с учётом назначения, условий эксплуатации и требований к оснащению.</p>
       </div>
 
     </div>
