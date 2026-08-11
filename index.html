@@ -758,7 +758,7 @@
           </svg>
         </div>
         <div class="doc-title">Выписка из реестра лицензий по ТО медицинских изделий</div>
-        <div class="doc-label">PDF · Открыть ↗</div>
+        <div class="doc-label">Открыть ↗</div>
       </a>
 
       <a class="doc-card reveal" href="docs/Выписка_из_реестра_лицензий_ИИИ_ООО_МТСК.pdf" target="_blank" rel="noopener" type="application/pdf">
@@ -772,7 +772,7 @@
           </svg>
         </div>
         <div class="doc-title">Выписка из реестра лицензий ИИИ</div>
-        <div class="doc-label">PDF · Открыть ↗</div>
+        <div class="doc-label">Открыть ↗</div>
       </a>
 
       <a class="doc-card reveal" href="docs/ИСО_134852017_МТСК.pdf" target="_blank" rel="noopener" type="application/pdf">
@@ -783,7 +783,7 @@
           </svg>
         </div>
         <div class="doc-title">Сертификат ISO 13485:2017</div>
-        <div class="doc-label">PDF · Открыть ↗</div>
+        <div class="doc-label">Открыть ↗</div>
       </a>
 
       <a class="doc-card reveal" href="docs/Аттестат_аккредитации_метрологии_КТС_МИ_МТСК.pdf" target="_blank" rel="noopener" type="application/pdf">
@@ -795,7 +795,7 @@
           </svg>
         </div>
         <div class="doc-title">Аттестат аккредитации по метрологии КТС МИ</div>
-        <div class="doc-label">PDF · Открыть ↗</div>
+        <div class="doc-label">Открыть ↗</div>
       </a>
 
       <a class="doc-card reveal" href="docs/СЭЗ_ИИИ_МТСК.pdf" target="_blank" rel="noopener" type="application/pdf">
@@ -805,7 +805,7 @@
           </svg>
         </div>
         <div class="doc-title">Санитарно-эпидемиологическое заключение ИИИ</div>
-        <div class="doc-label">PDF · Открыть ↗</div>
+        <div class="doc-label">Открыть ↗</div>
       </a>
 
     </div>
@@ -877,5 +877,19 @@
   document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 </script>
 
+<script>
+// Открытие PDF через браузерный просмотрщик Google Docs, чтобы документ
+// открывался для просмотра, а не принудительно скачивался.
+document.addEventListener('DOMContentLoaded', function () {
+  document.querySelectorAll('.doc-card[href$=".pdf"]').forEach(function (link) {
+    link.addEventListener('click', function (event) {
+      event.preventDefault();
+      var pdfUrl = new URL(link.getAttribute('href'), window.location.href).href;
+      var viewerUrl = 'https://docs.google.com/gview?embedded=1&url=' + encodeURIComponent(pdfUrl);
+      window.open(viewerUrl, '_blank', 'noopener');
+    });
+  });
+});
+</script>
 </body>
 </html>
